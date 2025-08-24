@@ -1,0 +1,41 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "public/index.php",
+            "use": "vercel-php@0.6.0"
+        },
+        {
+            "src": "package.json",
+            "use": "@vercel/static-build",
+            "config": {
+                "zeroConfig": true
+            }
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(css|js|images|build|favicon.ico|robots.txt)/(.*)",
+            "dest": "/public/$1/$2"
+        },
+        {
+            "src": "/api/(.*)",
+            "dest": "/public/index.php"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/public/index.php"
+        }
+    ],
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "false",
+        "DB_CONNECTION": "sqlite",
+        "DB_DATABASE": "/tmp/database.sqlite"
+    },
+    "functions": {
+        "public/index.php": {
+            "runtime": "vercel-php@0.6.0"
+        }
+    }
+}
