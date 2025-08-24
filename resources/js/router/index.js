@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Dashboard from '../components/Dashboard.vue';
 import MonthDetail from '../components/MonthDetail.vue';
+import PrefixManagement from '../components/PrefixManagement.vue';
 
 const routes = [
   {
@@ -13,6 +14,11 @@ const routes = [
     name: 'MonthDetail',
     component: MonthDetail,
     props: true
+  },
+  {
+    path: '/prefixes',
+    name: 'PrefixManagement',
+    component: PrefixManagement
   }
 ];
 

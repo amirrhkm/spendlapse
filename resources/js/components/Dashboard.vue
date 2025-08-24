@@ -1,16 +1,23 @@
 <template>
   <div class="min-h-screen bg-black">
-    <Header />
+    <Header :transactionCount="allTransactions.length" />
     <main class="container mx-auto px-4 py-12">
-      <!-- Monthly Overview Cards -->
-      <div class="mt-8">
-        <MonthlyOverview :monthlyData="monthlyData" />
-      </div>
       
-      <!-- Upload Section - Simple inline button -->
-      <div class="mb-8">
-        <FileUpload @uploaded="handleUpload" :loading="loading" />
-      </div>
+
+        <!-- Custom Categories Summary -->
+        <div class="mt-8 mb-8">
+          <CustomPrefixManager :transactions="allTransactions" />
+        </div>
+
+        <!-- Monthly Overview Cards -->
+        <div class="mt-8">
+          <MonthlyOverview :monthlyData="monthlyData" />
+        </div>
+        
+        <!-- Upload Section - Simple inline button -->
+        <div class="mb-8">
+          <FileUpload @uploaded="handleUpload" :loading="loading" />
+        </div>
     </main>
   </div>
 </template>
@@ -20,19 +27,22 @@ import { ref, onMounted } from 'vue';
 import Header from './Header.vue';
 import FileUpload from './FileUpload.vue';
 import MonthlyOverview from './MonthlyOverview.vue';
+import CustomPrefixManager from './CustomPrefixManager.vue';
 import { transactionService } from '../services/TransactionService';
 
 const loading = ref(false);
 const monthlyData = ref([]);
+const allTransactions = ref([]);
 
 const loadMonthlyData = async () => {
   try {
-    const allTransactions = await transactionService.getAllTransactions();
+    const transactions = await transactionService.getAllTransactions();
+    allTransactions.value = transactions; // Store all transactions for prefix manager
     
     // Group transactions by month and calculate summaries
     const monthlyGroups = {};
     
-    allTransactions.forEach(transaction => {
+    transactions.forEach(transaction => {
       const date = new Date(transaction.transaction_date);
       let year = date.getFullYear();
       const month = date.getMonth() + 1;

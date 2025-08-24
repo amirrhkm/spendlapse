@@ -3,6 +3,17 @@
     <div class="container mx-auto px-4 py-8">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
+          <!-- Menu Button -->
+          <button 
+            @click="toggleSidePanel"
+            class="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-800 mr-2"
+            title="Open navigation menu"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          
           <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -23,8 +34,29 @@
       </div>
     </div>
   </header>
+  
+  <!-- Side Panel -->
+  <SidePanel :isOpen="sidePanelOpen" :transactionCount="transactionCount" @close="closeSidePanel" />
 </template>
 
 <script setup>
-// No additional logic needed for now
+import { ref } from 'vue';
+import SidePanel from './SidePanel.vue';
+
+const props = defineProps({
+  transactionCount: {
+    type: Number,
+    default: 0
+  }
+});
+
+const sidePanelOpen = ref(false);
+
+const toggleSidePanel = () => {
+  sidePanelOpen.value = !sidePanelOpen.value;
+};
+
+const closeSidePanel = () => {
+  sidePanelOpen.value = false;
+};
 </script>
