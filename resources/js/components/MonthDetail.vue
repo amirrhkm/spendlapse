@@ -16,17 +16,17 @@
                      <!-- Month Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
-            <div class="text-gray-400 text-sm font-medium">Total Money In</div>
+            <div class="text-gray-400 text-sm font-medium">{{ $t('monthDetail.totalMoneyIn') }}</div>
             <div class="text-2xl font-bold text-green-400">{{ formatCurrency(monthData.total_money_in) }}</div>
           </div>
           
           <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
-            <div class="text-gray-400 text-sm font-medium">Total Money Out</div>
+            <div class="text-gray-400 text-sm font-medium">{{ $t('monthDetail.totalMoneyOut') }}</div>
             <div class="text-2xl font-bold text-red-400">{{ formatCurrency(monthData.total_money_out) }}</div>
           </div>
           
           <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
-            <div class="text-gray-400 text-sm font-medium">Net Change</div>
+            <div class="text-gray-400 text-sm font-medium">{{ $t('monthDetail.netChange') }}</div>
             <div 
               class="text-2xl font-bold"
               :class="monthData.net_change >= 0 ? 'text-green-400' : 'text-red-400'"
@@ -36,7 +36,7 @@
           </div>
           
           <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
-            <div class="text-gray-400 text-sm font-medium">Final Balance</div>
+            <div class="text-gray-400 text-sm font-medium">{{ $t('monthDetail.finalBalance') }}</div>
             <div class="text-2xl font-bold text-blue-400">{{ formatCurrency(monthData.final_balance) }}</div>
           </div>
         </div>
@@ -50,7 +50,7 @@
        <div class="bg-gray-900 rounded-xl shadow-lg border border-gray-700 overflow-hidden mb-8">
         <div class="px-6 py-4 border-b border-gray-700">
           <h2 class="text-xl font-semibold text-white">
-            All Transactions ({{ transactions.length }})
+            {{ $t('monthDetail.allTransactions') }} ({{ transactions.length }})
           </h2>
         </div>
         
@@ -59,19 +59,19 @@
             <thead class="bg-gray-800 border-b border-gray-700">
               <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Date
+                  {{ $t('monthDetail.date') }}
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Details
+                  {{ $t('monthDetail.details') }}
                 </th>
                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Money In
+                  {{ $t('monthDetail.moneyIn') }}
                 </th>
                 <th class="px-6 py-3 text-right text-xs font-medium text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Money Out
+                  {{ $t('monthDetail.moneyOut') }}
                 </th>
                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
-                  Balance
+                  {{ $t('monthDetail.balance') }}
                 </th>
               </tr>
             </thead>

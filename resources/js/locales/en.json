@@ -1,6 +1,7 @@
 {
   "common": {
     "currency": "MYR",
+    "optional": "Optional",
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",
@@ -36,6 +37,7 @@
     "financialDashboard": "Financial Dashboard"
   },
   "monthlyOverview": {
+    "period": "Period",
     "month": "Month",
     "year": "Year",
     "totalMoneyIn": "Total Money In",
@@ -43,11 +45,18 @@
     "netChange": "Net Change",
     "finalBalance": "Final Balance",
     "transactionCount": "Transactions",
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "totalMonths": "Total Months",
+    "totalTransactions": "Total Transactions",
+    "overallNet": "Overall Net"
   },
   "monthDetail": {
     "title": "Transaction Details",
     "allTransactions": "All Transactions",
+    "totalMoneyIn": "Total Money In",
+    "totalMoneyOut": "Total Money Out",
+    "netChange": "Net Change",
+    "finalBalance": "Final Balance",
     "date": "Date",
     "details": "Details",
     "moneyIn": "Money In",
@@ -57,12 +66,15 @@
   },
   "categories": {
     "title": "Custom Transaction Categories",
+    "description": "Manage your transaction prefixes to automatically categorize spending patterns",
     "addNewCategory": "Add New Category",
     "currentCategories": "Current Categories",
     "categoryName": "Category Name",
     "description": "Description",
     "descriptionPlaceholder": "e.g., Online payments, Bank transfers",
     "categoryPlaceholder": "e.g., DUITNOW, I-PAYMENT, POS DEBIT",
+    "categoryHelp": "This will be used to match transaction descriptions",
+    "descriptionHelp": "Helpful note for your reference",
     "addCategory": "Add Category",
     "adding": "Adding...",
     "clearForm": "Clear Form",
@@ -83,10 +95,13 @@
     "description": "Upload your CSV bank statement to analyze transactions",
     "selectFile": "Select CSV File",
     "dragDrop": "or drag and drop here",
+    "dropHere": "Drop your CSV file here, or ",
+    "browseFiles": "browse files",
     "fileTypes": "CSV files only",
-    "maxSize": "Max file size: 10MB",
+    "maxSize": "max 2MB",
     "upload": "Upload",
     "uploading": "Uploading...",
+    "processing": "Processing...",
     "success": "File uploaded successfully!",
     "error": "Failed to upload file",
     "invalidFile": "Please select a valid CSV file"
@@ -111,5 +126,15 @@
     "quickStats": "Quick Stats",
     "categories": "Categories",
     "transactions": "Transactions"
+  },
+  "monthlySummary": {
+    "uploadPrompt": "Upload a CSV file to see your monthly summary",
+    "moneyIn": "Money In",
+    "moneyOut": "Money Out",
+    "finalBalance": "Final Balance",
+    "netChange": "Net Change",
+    "quickStats": "Quick Stats",
+    "transactions": "Transactions",
+    "averageExpense": "Average Expense"
   }
 }

@@ -9,9 +9,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                   d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
           </svg>
-          Custom Transaction Categories
+          {{ $t('categories.title') }}
         </h1>
-        <p class="text-gray-400 mt-2">Manage your transaction prefixes to automatically categorize spending patterns</p>
+        <p class="text-gray-400 mt-2">{{ $t('categories.description') }}</p>
       </div>
 
       <!-- Add New Prefix Form -->
@@ -20,38 +20,38 @@
           <svg class="w-6 h-6 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
-          Add New Category
+          {{ $t('categories.addNewCategory') }}
         </h2>
         
         <form @submit.prevent="addPrefix" class="space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label for="prefix" class="block text-sm font-medium text-gray-300 mb-2">
-                Category Name
+                {{ $t('categories.categoryName') }}
               </label>
               <input 
                 id="prefix"
                 v-model="newPrefix"
                 type="text"
-                placeholder="e.g., DUITNOW, I-PAYMENT, POS DEBIT"
+                :placeholder="$t('categories.categoryPlaceholder')"
                 class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
                 required
               />
-              <p class="text-xs text-gray-500 mt-1">This will be used to match transaction descriptions</p>
+              <p class="text-xs text-gray-500 mt-1">{{ $t('categories.categoryHelp') }}</p>
             </div>
             
             <div>
               <label for="description" class="block text-sm font-medium text-gray-300 mb-2">
-                Description (Optional)
+                {{ $t('categories.description') }} ({{ $t('common.optional') }})
               </label>
               <input 
                 id="description"
                 v-model="newDescription"
                 type="text"
-                placeholder="e.g., Online payments, Bank transfers"
+                :placeholder="$t('categories.descriptionPlaceholder')"
                 class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-colors"
               />
-              <p class="text-xs text-gray-500 mt-1">Helpful note for your reference</p>
+              <p class="text-xs text-gray-500 mt-1">{{ $t('categories.descriptionHelp') }}</p>
             </div>
           </div>
           
@@ -65,7 +65,7 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              {{ adding ? 'Adding...' : 'Add Category' }}
+              {{ adding ? $t('categories.adding') : $t('categories.addCategory') }}
             </button>
             
             <button 
@@ -73,7 +73,7 @@
               @click="clearForm"
               class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors"
             >
-              Clear Form
+              {{ $t('categories.clearForm') }}
             </button>
           </div>
         </form>
@@ -86,7 +86,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                   d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
           </svg>
-          Current Categories
+          {{ $t('categories.currentCategories') }}
         </h2>
         
         <div v-if="prefixes.length === 0" class="text-center py-12">
@@ -94,8 +94,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                   d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
           </svg>
-          <p class="text-gray-400 text-lg">No categories added yet</p>
-          <p class="text-gray-500 text-sm mt-2">Add your first category above to start organizing transactions</p>
+          <p class="text-gray-400 text-lg">{{ $t('categories.noCategories') }}</p>
+          <p class="text-gray-500 text-sm mt-2">{{ $t('categories.noCategoriesDescription') }}</p>
         </div>
         
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -108,7 +108,7 @@
               <div class="flex-1">
                 <h3 class="text-lg font-semibold text-white mb-2">{{ prefix.name }}</h3>
                 <p v-if="prefix.description" class="text-gray-400 text-sm">{{ prefix.description }}</p>
-                <p v-else class="text-gray-500 text-sm italic">No description</p>
+                <p v-else class="text-gray-500 text-sm italic">{{ $t('categories.noDescription') }}</p>
               </div>
               
               <div class="w-10 h-10 bg-purple-600/20 rounded-lg flex items-center justify-center flex-shrink-0">

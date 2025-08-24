@@ -20,7 +20,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
-      <p class="text-gray-400">Upload a CSV file to see your monthly summary</p>
+      <p class="text-gray-400">{{ $t('monthlySummary.uploadPrompt') }}</p>
     </div>
     
     <div v-else class="space-y-6">
@@ -37,7 +37,7 @@
         <div class="bg-green-900/30 border border-green-700 rounded-lg p-4">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-green-300 text-sm font-medium uppercase tracking-wide">Money In</p>
+              <p class="text-green-300 text-sm font-medium uppercase tracking-wide">{{ $t('monthlySummary.moneyIn') }}</p>
               <p class="text-2xl font-bold text-white mt-1">
                 {{ formatCurrency(summary.total_money_in) }}
               </p>
@@ -55,7 +55,7 @@
         <div class="bg-red-900/30 border border-red-700 rounded-lg p-4">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-red-300 text-sm font-medium uppercase tracking-wide">Money Out</p>
+              <p class="text-red-300 text-sm font-medium uppercase tracking-wide">{{ $t('monthlySummary.moneyOut') }}</p>
               <p class="text-2xl font-bold text-white mt-1">
                 {{ formatCurrency(summary.total_money_out) }}
               </p>
@@ -73,14 +73,14 @@
       <!-- Final Balance -->
       <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
         <div class="text-center">
-          <p class="text-slate-300 text-sm font-medium uppercase tracking-wide mb-2">Final Balance</p>
+          <p class="text-slate-300 text-sm font-medium uppercase tracking-wide mb-2">{{ $t('monthlySummary.finalBalance') }}</p>
           <p class="text-3xl font-bold text-white">
             {{ formatCurrency(summary.final_balance) }}
           </p>
           
           <!-- Net Change -->
           <div class="mt-4 flex items-center justify-center space-x-2">
-            <span class="text-gray-400 text-sm">Net Change:</span>
+            <span class="text-gray-400 text-sm">{{ $t('monthlySummary.netChange') }}:</span>
             <span 
               class="text-sm font-medium"
               :class="summary.net_change >= 0 ? 'text-green-400' : 'text-red-400'"
@@ -93,14 +93,14 @@
       
       <!-- Summary Stats -->
       <div class="bg-gray-800 border border-gray-700 rounded-lg p-4">
-        <h4 class="text-white font-medium mb-3">Quick Stats</h4>
+        <h4 class="text-white font-medium mb-3">{{ $t('monthlySummary.quickStats') }}</h4>
         <div class="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <span class="text-gray-400">Transactions:</span>
+            <span class="text-gray-400">{{ $t('monthlySummary.transactions') }}:</span>
             <span class="text-white ml-2 font-medium">{{ summary.transaction_count || 'N/A' }}</span>
           </div>
           <div>
-            <span class="text-gray-400">Average Expense:</span>
+            <span class="text-gray-400">{{ $t('monthlySummary.averageExpense') }}:</span>
             <span class="text-white ml-2 font-medium">
               {{ summary.total_money_out > 0 ? formatCurrency(summary.total_money_out / (summary.transaction_count || 1)) : 'N/A' }}
             </span>

@@ -16,17 +16,17 @@
         
         <div class="flex-1 min-w-0">
           <p class="text-gray-300 text-sm">
-            <span v-if="!selectedFile">Drop your CSV file here, or </span>
+            <span v-if="!selectedFile">{{ $t('fileUpload.dropHere') }} </span>
             <button 
               v-if="!selectedFile"
               @click="triggerFileInput"
               class="text-blue-400 hover:text-blue-300 font-medium"
             >
-              browse files
+              {{ $t('fileUpload.browseFiles') }}
             </button>
             <span v-if="selectedFile" class="text-white font-medium">{{ selectedFile.name }}</span>
           </p>
-          <p v-if="!selectedFile" class="text-xs text-gray-500">CSV files only, max 2MB</p>
+          <p v-if="!selectedFile" class="text-xs text-gray-500">{{ $t('fileUpload.fileTypes') }}, {{ $t('fileUpload.maxSize') }}</p>
           <p v-if="selectedFile" class="text-xs text-gray-400">{{ formatFileSize(selectedFile.size) }}</p>
         </div>
         
@@ -60,7 +60,7 @@
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
       </svg>
-      {{ loading ? 'Processing...' : 'Upload' }}
+      {{ loading ? $t('fileUpload.processing') : $t('fileUpload.upload') }}
     </button>
   </div>
   
@@ -146,7 +146,7 @@ const uploadFile = async () => {
         clearFile();
       }
   } catch (error) {
-    message.value = 'Failed to upload file. Please try again.';
+    message.value = $t('fileUpload.uploadError');
     messageType.value = 'error';
   } finally {
     loading.value = false;
