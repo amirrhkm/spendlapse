@@ -2,8 +2,6 @@
   <div class="min-h-screen bg-black">
     <Header :transactionCount="allTransactions.length" />
     <main class="container mx-auto px-4 py-12">
-      
-
         <!-- Custom Categories Summary -->
         <div class="mt-8 mb-8">
           <CustomPrefixManager :transactions="allTransactions" />

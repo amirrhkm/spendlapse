@@ -1,7 +1,5 @@
 <template>
     <div class="mb-8">
-    
-
     <!-- Category Summary Cards -->
     <div v-if="prefixes.length > 0 && categoryData.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <div 
@@ -19,39 +17,40 @@
           </div>
         </div>
         
-        <div class="space-y-2">
-          <div class="flex justify-between items-center">
-            <span class="text-gray-400 text-sm">Total Spent:</span>
-            <span class="text-red-400 font-medium">{{ formatCurrency(category.totalSpent) }}</span>
-          </div>
-          
-          <div class="flex justify-between items-center">
-            <span class="text-gray-400 text-sm">Total Received:</span>
-            <span class="text-green-400 font-medium">{{ formatCurrency(category.totalReceived) }}</span>
-          </div>
-          
-          <div class="flex justify-between items-center pt-2 border-t border-gray-700">
-            <span class="text-gray-400 text-sm font-medium">Net:</span>
-            <span 
-              class="font-bold"
-              :class="category.netAmount >= 0 ? 'text-green-400' : 'text-red-400'"
-            >
-              {{ category.netAmount >= 0 ? '+' : '' }}{{ formatCurrency(category.netAmount) }}
-            </span>
-          </div>
-          
-          <div class="flex justify-between items-center">
-            <span class="text-gray-400 text-xs">Transactions:</span>
-            <span class="text-white text-xs">{{ category.transactionCount }}</span>
-          </div>
-        </div>
+         <div class="space-y-2">
+           <div class="flex justify-between items-center">
+             <span class="text-gray-400 text-sm">{{ $t('categories.totalSpent') }}:</span>
+             <span class="text-red-400 font-medium">{{ formatCurrency(category.totalSpent) }}</span>
+           </div>
+           
+           <div class="flex justify-between items-center">
+             <span class="text-gray-400 text-sm">{{ $t('categories.totalReceived') }}:</span>
+             <span class="text-green-400 font-medium">{{ formatCurrency(category.totalReceived) }}</span>
+           </div>
+           
+           <div class="flex justify-between items-center pt-2 border-t border-gray-700">
+             <span class="text-gray-400 text-sm font-medium">{{ $t('categories.net') }}:</span>
+             <span 
+               class="font-bold"
+               :class="category.netAmount >= 0 ? 'text-green-400' : 'text-red-400'"
+             >
+               {{ category.netAmount >= 0 ? '+' : '' }}{{ formatCurrency(category.netAmount) }}
+             </span>
+           </div>
+           
+           <div class="flex justify-between items-center">
+             <span class="text-gray-400 text-xs">{{ $t('categories.transactions') }}:</span>
+             <span class="text-white text-xs">{{ category.transactionCount }}</span>
+           </div>
+         </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, getCurrentInstance } from 'vue';
+import localizationService from '../services/LocalizationService';
 
 const props = defineProps({
   transactions: {
@@ -81,8 +80,8 @@ onMounted(() => {
 });
 
 const formatCurrency = (amount) => {
-  if (amount === null || amount === undefined) return 'MYR 0.00';
-  return `MYR ${Number(amount).toFixed(2)}`;
+  if (amount === null || amount === undefined) return `${localizationService.t('common.currency')} 0.00`;
+  return `${localizationService.t('common.currency')} ${Number(amount).toFixed(2)}`;
 };
 
 // Calculate category data based on prefixes and transactions
