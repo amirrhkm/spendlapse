@@ -27,31 +27,31 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label for="prefix" class="block text-sm font-medium text-gray-300 mb-2">
-                {{ $t('categories.categoryName') }}
+                {{ $t('categories.prefix') }}
               </label>
               <input 
                 id="prefix"
                 v-model="newPrefix"
                 type="text"
-                :placeholder="$t('categories.categoryPlaceholder')"
+                :placeholder="$t('categories.prefixPlaceholder')"
                 class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
                 required
               />
-              <p class="text-xs text-gray-500 mt-1">{{ $t('categories.categoryHelp') }}</p>
+              <p class="text-xs text-gray-500 mt-1">{{ $t('categories.prefixHelp') }}</p>
             </div>
             
             <div>
               <label for="description" class="block text-sm font-medium text-gray-300 mb-2">
-                {{ $t('categories.description') }} ({{ $t('common.optional') }})
+                {{ $t('categories.name') }} ({{ $t('common.optional') }})
               </label>
               <input 
                 id="description"
                 v-model="newDescription"
                 type="text"
-                :placeholder="$t('categories.descriptionPlaceholder')"
+                :placeholder="$t('categories.namePlaceholder')"
                 class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-colors"
               />
-              <p class="text-xs text-gray-500 mt-1">{{ $t('categories.descriptionHelp') }}</p>
+              <p class="text-xs text-gray-500 mt-1">{{ $t('categories.nameHelp') }}</p>
             </div>
           </div>
           
@@ -106,8 +106,8 @@
           >
             <div class="flex items-start justify-between mb-4">
               <div class="flex-1">
-                <h3 class="text-lg font-semibold text-white mb-2">{{ prefix.name }}</h3>
-                <p v-if="prefix.description" class="text-gray-400 text-sm">{{ prefix.description }}</p>
+                <h3 class="text-lg font-semibold text-white mb-2">{{ prefix.description ? prefix.description : prefix.name }}</h3>
+                <p v-if="prefix.description" class="text-gray-400 text-xs">{{ prefix.name }}</p>
                 <p v-else class="text-gray-500 text-sm italic">{{ $t('categories.noDescription') }}</p>
               </div>
               

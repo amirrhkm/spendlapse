@@ -8,7 +8,10 @@
         class="bg-gray-900 rounded-lg p-4 border border-gray-700 hover:border-gray-600 transition-colors"
       >
         <div class="flex items-center justify-between mb-3">
-          <h4 class="text-lg font-semibold text-white">{{ category.prefix }}</h4>
+          <div>
+            <h4 class="text-lg font-semibold text-white">{{ category.displayName }}</h4>
+            <p v-if="category.displayName !== category.prefix" class="text-xs text-gray-500">{{ category.prefix }}</p>
+          </div>
           <div class="w-8 h-8 bg-purple-600/20 rounded-lg flex items-center justify-center">
             <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -103,6 +106,7 @@ const categoryData = computed(() => {
     
     return {
       prefix: prefixObj.name,
+      displayName: prefixObj.description ? prefixObj.description : prefixObj.name,
       totalSpent,
       totalReceived,
       netAmount: totalReceived - totalSpent,
