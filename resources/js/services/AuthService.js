@@ -6,11 +6,15 @@ class AuthService {
 
     async request(endpoint, options = {}) {
         const url = `${this.baseURL}${endpoint}`;
+        
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        
         const config = {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
+                ...(csrfToken && { 'X-CSRF-TOKEN': csrfToken }),
             },
             credentials: 'same-origin',
             ...options

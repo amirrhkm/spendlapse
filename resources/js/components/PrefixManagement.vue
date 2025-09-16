@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-black">
-    <Header />
+    <Header :transactionCount="transactionCount" />
     <main class="container mx-auto px-4 py-12">
       <!-- Page Title -->
       <div class="mt-8 mb-8">
@@ -106,8 +106,8 @@
           >
             <div class="flex items-start justify-between mb-4">
               <div class="flex-1">
-                <h3 class="text-lg font-semibold text-white mb-2">{{ prefix.description ? prefix.description : prefix.name }}</h3>
-                <p v-if="prefix.description" class="text-gray-400 text-xs">{{ prefix.name }}</p>
+                <h3 class="text-lg font-semibold text-white mb-2">{{ prefix.display_name || prefix.name }}</h3>
+                <p v-if="prefix.display_name" class="text-gray-400 text-xs">{{ prefix.name }}</p>
                 <p v-else class="text-gray-500 text-sm italic">{{ $t('categories.noDescription') }}</p>
               </div>
               
@@ -121,7 +121,7 @@
             
             <div class="flex items-center justify-between">
               <span class="text-xs text-gray-500">
-                Added: {{ formatDate(prefix.createdAt) }}
+                Added: {{ formatDate(prefix.created_at) }}
               </span>
               
               <button 
@@ -144,21 +144,40 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import Header from './Header.vue';
+import { categoryService } from '../services/CategoryService';
 
 const prefixes = ref([]);
 const newPrefix = ref('');
 const newDescription = ref('');
 const adding = ref(false);
+const transactionCount = ref(0);
 
-// Load saved prefixes from localStorage
-onMounted(() => {
-  loadPrefixes();
+onMounted(async () => {
+  await loadCategories();
+  await migrateFromLocalStorage();
+  await loadTransactionCount();
 });
 
-const loadPrefixes = () => {
-  const savedPrefixes = localStorage.getItem('customPrefixes');
-  if (savedPrefixes) {
-    prefixes.value = JSON.parse(savedPrefixes);
+const loadCategories = async () => {
+  try {
+    const response = await categoryService.getCategories();
+    if (response.success) {
+      prefixes.value = response.categories;
+    }
+  } catch (error) {
+    console.error('Failed to load categories:', error);
+  }
+};
+
+const migrateFromLocalStorage = async () => {
+  try {
+    const response = await categoryService.migrateFromLocalStorage();
+    if (response.success && response.migrated_count > 0) {
+      console.log(`Migrated ${response.migrated_count} categories from localStorage`);
+      await loadCategories();
+    }
+  } catch (error) {
+    console.error('Migration failed:', error);
   }
 };
 
@@ -167,41 +186,42 @@ const addPrefix = async () => {
   
   adding.value = true;
   
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  const prefixName = newPrefix.value.trim().toUpperCase();
-  
-  // Check if prefix already exists
-  if (prefixes.value.some(p => p.name === prefixName)) {
-    alert('This category already exists!');
+  try {
+    const response = await categoryService.createCategory({
+      name: newPrefix.value.trim(),
+      display_name: newDescription.value.trim() || null,
+      description: null
+    });
+    
+    if (response.success) {
+      await loadCategories();
+      clearForm();
+    } else {
+      alert(response.message || 'Failed to create category');
+    }
+  } catch (error) {
+    alert('Network error. Please try again.');
+    console.error('Create category error:', error);
+  } finally {
     adding.value = false;
-    return;
   }
-  
-  // Add new prefix with metadata
-  const newPrefixObj = {
-    name: prefixName,
-    description: newDescription.value.trim() || null,
-    createdAt: new Date().toISOString()
-  };
-  
-  prefixes.value.push(newPrefixObj);
-  
-  // Save to localStorage
-  localStorage.setItem('customPrefixes', JSON.stringify(prefixes.value));
-  
-  // Clear form
-  clearForm();
-  adding.value = false;
 };
 
-const removePrefix = (prefixName) => {
+const removePrefix = async (prefixName) => {
   if (confirm(`Are you sure you want to remove "${prefixName}"? This will also remove it from all transaction categorizations.`)) {
-    const index = prefixes.value.findIndex(p => p.name === prefixName);
-    if (index > -1) {
-      prefixes.value.splice(index, 1);
-      localStorage.setItem('customPrefixes', JSON.stringify(prefixes.value));
+    const category = prefixes.value.find(p => p.name === prefixName);
+    if (category) {
+      try {
+        const response = await categoryService.deleteCategory(category.id);
+        if (response.success) {
+          await loadCategories();
+        } else {
+          alert(response.message || 'Failed to delete category');
+        }
+      } catch (error) {
+        alert('Network error. Please try again.');
+        console.error('Delete category error:', error);
+      }
     }
   }
 };
@@ -209,6 +229,30 @@ const removePrefix = (prefixName) => {
 const clearForm = () => {
   newPrefix.value = '';
   newDescription.value = '';
+};
+
+const loadTransactionCount = async () => {
+  try {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    
+    const response = await fetch('/api/transactions', {
+      headers: {
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        ...(csrfToken && { 'X-CSRF-TOKEN': csrfToken }),
+      },
+      credentials: 'same-origin',
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        transactionCount.value = data.length;
+      }
+    }
+  } catch (error) {
+    console.error('Failed to load transaction count:', error);
+  }
 };
 
 const formatDate = (dateString) => {

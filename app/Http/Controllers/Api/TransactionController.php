@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -18,6 +19,10 @@ class TransactionController extends Controller
      */
     public function upload(Request $request): JsonResponse
     {
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Not authenticated'], 401);
+        }
+
         $request->validate([
             'file' => 'required|file|mimes:csv,txt|max:2048'
         ]);
@@ -42,6 +47,10 @@ class TransactionController extends Controller
      */
     public function summary(Request $request): JsonResponse
     {
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Not authenticated'], 401);
+        }
+
         $year = $request->get('year', now()->year);
         $month = $request->get('month', now()->month);
 
@@ -55,6 +64,10 @@ class TransactionController extends Controller
      */
     public function index(): JsonResponse
     {
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Not authenticated'], 401);
+        }
+
         $transactions = $this->transactionService->getAllTransactions();
 
         return response()->json($transactions);

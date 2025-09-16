@@ -165,6 +165,10 @@
       "registering": "Creating Account...",
       "hasAccount": "Already have an account?",
       "loginLink": "Sign in here"
+    },
+    "logout": {
+      "button": "Sign Out",
+      "logging": "Signing Out..."
     }
   }
 }

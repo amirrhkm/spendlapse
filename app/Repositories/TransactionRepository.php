@@ -25,6 +25,10 @@ class TransactionRepository implements TransactionRepositoryInterface
     public function getAll(): Collection
     {
         $userId = auth()->id();
+        if (!$userId) {
+            return collect();
+        }
+        
         return Transaction::where('user_id', $userId)
             ->orderBy('transaction_date', 'desc')
             ->get();
@@ -33,6 +37,10 @@ class TransactionRepository implements TransactionRepositoryInterface
     public function getByMonth(int $year, int $month): Collection
     {
         $userId = auth()->id();
+        if (!$userId) {
+            return collect();
+        }
+        
         return Transaction::where('user_id', $userId)
             ->whereYear('transaction_date', $year)
             ->whereMonth('transaction_date', $month)
@@ -43,6 +51,10 @@ class TransactionRepository implements TransactionRepositoryInterface
     public function getTotalMoneyIn(int $year, int $month): float
     {
         $userId = auth()->id();
+        if (!$userId) {
+            return 0.0;
+        }
+        
         return Transaction::where('user_id', $userId)
             ->whereYear('transaction_date', $year)
             ->whereMonth('transaction_date', $month)
@@ -53,6 +65,10 @@ class TransactionRepository implements TransactionRepositoryInterface
     public function getTotalMoneyOut(int $year, int $month): float
     {
         $userId = auth()->id();
+        if (!$userId) {
+            return 0.0;
+        }
+        
         return Transaction::where('user_id', $userId)
             ->whereYear('transaction_date', $year)
             ->whereMonth('transaction_date', $month)
@@ -63,6 +79,10 @@ class TransactionRepository implements TransactionRepositoryInterface
     public function getFinalBalance(int $year, int $month): float
     {
         $userId = auth()->id();
+        if (!$userId) {
+            return 0.0;
+        }
+        
         $lastTransaction = Transaction::where('user_id', $userId)
             ->whereYear('transaction_date', $year)
             ->whereMonth('transaction_date', $month)
@@ -85,7 +105,13 @@ class TransactionRepository implements TransactionRepositoryInterface
     public function clearByMonth(int $year, int $month): bool
     {
         try {
-            Transaction::whereYear('transaction_date', $year)
+            $userId = auth()->id();
+            if (!$userId) {
+                return false;
+            }
+            
+            Transaction::where('user_id', $userId)
+                ->whereYear('transaction_date', $year)
                 ->whereMonth('transaction_date', $month)
                 ->delete();
             return true;

@@ -52,8 +52,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, getCurrentInstance } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import localizationService from '../services/LocalizationService';
+import { categoryService } from '../services/CategoryService';
 
 const props = defineProps({
   transactions: {
@@ -64,30 +65,39 @@ const props = defineProps({
 
 const prefixes = ref([]);
 
-// Load saved prefixes from localStorage
-onMounted(() => {
-  loadPrefixes();
+onMounted(async () => {
+  await loadCategories();
+  await migrateFromLocalStorage();
 });
 
-// Watch for changes in localStorage
-const loadPrefixes = () => {
-  const savedPrefixes = localStorage.getItem('customPrefixes');
-  if (savedPrefixes) {
-    prefixes.value = JSON.parse(savedPrefixes);
+const loadCategories = async () => {
+  try {
+    const response = await categoryService.getCategories();
+    if (response.success) {
+      prefixes.value = response.categories;
+    }
+  } catch (error) {
+    console.error('Failed to load categories:', error);
   }
 };
 
-// Set up an interval to check for localStorage changes
-onMounted(() => {
-  setInterval(loadPrefixes, 1000); // Check every second for changes
-});
+const migrateFromLocalStorage = async () => {
+  try {
+    const response = await categoryService.migrateFromLocalStorage();
+    if (response.success && response.migrated_count > 0) {
+      console.log(`Migrated ${response.migrated_count} categories from localStorage`);
+      await loadCategories();
+    }
+  } catch (error) {
+    console.error('Migration failed:', error);
+  }
+};
 
 const formatCurrency = (amount) => {
   if (amount === null || amount === undefined) return `${localizationService.t('common.currency')} 0.00`;
   return `${localizationService.t('common.currency')} ${Number(amount).toFixed(2)}`;
 };
 
-// Calculate category data based on prefixes and transactions
 const categoryData = computed(() => {
   if (!props.transactions.length || !prefixes.value.length) return [];
   
@@ -106,7 +116,7 @@ const categoryData = computed(() => {
     
     return {
       prefix: prefixObj.name,
-      displayName: prefixObj.description ? prefixObj.description : prefixObj.name,
+      displayName: prefixObj.display_name || prefixObj.name,
       totalSpent,
       totalReceived,
       netAmount: totalReceived - totalSpent,

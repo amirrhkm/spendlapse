@@ -31,6 +31,10 @@ class TransactionService
             
             $now = now();
             $userId = auth()->id();
+            if (!$userId) {
+                throw new \Exception('User not authenticated');
+            }
+            
             $transactions = array_map(function ($transaction) use ($now, $userId) {
                 $transaction['created_at'] = $now;
                 $transaction['updated_at'] = $now;
