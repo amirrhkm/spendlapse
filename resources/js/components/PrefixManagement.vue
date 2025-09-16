@@ -2,20 +2,30 @@
   <div class="min-h-screen bg-black">
     <Header :transactionCount="transactionCount" />
     <main class="container mx-auto px-4 py-12">
-      <!-- Page Title -->
-      <div class="mt-8 mb-8">
-        <h1 class="text-3xl font-bold text-white flex items-center">
-          <svg class="w-8 h-8 mr-3 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-          </svg>
-          {{ $t('categories.title') }}
-        </h1>
-        <p class="text-gray-400 mt-2">{{ $t('categories.description') }}</p>
+      <!-- Loading State -->
+      <div v-if="loading" class="flex items-center justify-center py-20">
+        <div class="text-center">
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mb-4"></div>
+          <p class="text-gray-400 text-lg">{{ $t('common.loading') }}</p>
+        </div>
       </div>
 
-      <!-- Add New Prefix Form -->
-      <div class="bg-gray-900 rounded-xl shadow-lg border border-gray-700 p-8 mb-8">
+      <!-- Content -->
+      <div v-else>
+        <!-- Page Title -->
+        <div class="mt-8 mb-8">
+          <h1 class="text-3xl font-bold text-white flex items-center">
+            <svg class="w-8 h-8 mr-3 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+            {{ $t('categories.title') }}
+          </h1>
+          <p class="text-gray-400 mt-2">{{ $t('categories.description') }}</p>
+        </div>
+
+        <!-- Add New Prefix Form -->
+        <div class="bg-gray-900 rounded-xl shadow-lg border border-gray-700 p-8 mb-8">
         <h2 class="text-xl font-semibold text-white mb-6 flex items-center">
           <svg class="w-6 h-6 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -137,6 +147,7 @@
           </div>
         </div>
       </div>
+      </div>
     </main>
   </div>
 </template>
@@ -151,11 +162,14 @@ const newPrefix = ref('');
 const newDescription = ref('');
 const adding = ref(false);
 const transactionCount = ref(0);
+const loading = ref(true);
 
 onMounted(async () => {
+  loading.value = true;
   await loadCategories();
   await migrateFromLocalStorage();
   await loadTransactionCount();
+  loading.value = false;
 });
 
 const loadCategories = async () => {
