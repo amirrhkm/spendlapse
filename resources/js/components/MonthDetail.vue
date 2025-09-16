@@ -2,16 +2,26 @@
   <div class="min-h-screen bg-black">
     <Header />
         <main class="container mx-auto px-4 py-12">
-      <!-- Month Title -->
-      <div class="mt-8 mb-8">
-         <h1 class="text-3xl font-bold text-white flex items-center">
-           <svg class="w-8 h-8 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-           </svg>
-           {{ getMonthName(monthData.month) }} {{ monthData.year }} - Transaction Details
-         </h1>
-       </div>
+      <!-- Loading State -->
+      <div v-if="loading" class="flex items-center justify-center py-20">
+        <div class="text-center">
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mb-4"></div>
+          <p class="text-gray-400 text-lg">{{ $t('common.loading') }}</p>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div v-else>
+        <!-- Month Title -->
+        <div class="mt-8 mb-8">
+           <h1 class="text-3xl font-bold text-white flex items-center">
+             <svg class="w-8 h-8 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+             </svg>
+             {{ getMonthName(monthData.month) }} {{ monthData.year }} - Transaction Details
+           </h1>
+         </div>
 
                      <!-- Month Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
@@ -129,6 +139,7 @@
           </table>
         </div>
       </div>
+      </div>
     </main>
   </div>
 </template>
@@ -141,6 +152,7 @@ import { transactionService } from '../services/TransactionService';
 
 const monthData = ref({});
 const transactions = ref([]);
+const loading = ref(true);
 
 const props = defineProps({
   year: {
@@ -176,6 +188,7 @@ const getMonthName = (monthNumber) => {
 };
 
 const loadMonthData = async () => {
+  loading.value = true;
   try {
     // Load all transactions and filter by month
     const allTransactions = await transactionService.getAllTransactions();
@@ -224,6 +237,8 @@ const loadMonthData = async () => {
     
   } catch (error) {
     console.error('Failed to load month data:', error);
+  } finally {
+    loading.value = false;
   }
 };
 
