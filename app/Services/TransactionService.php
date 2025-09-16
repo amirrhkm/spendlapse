@@ -16,38 +16,34 @@ class TransactionService
     public function uploadAndProcess(UploadedFile $file): array
     {
         try {
-            // Parse CSV file first to get the month/year
             $transactions = $this->parser->parse($file);
             
             if (empty($transactions)) {
                 throw new \Exception('No valid transactions found in CSV');
             }
             
-            // Get the month and year from the first transaction
             $firstTransaction = $transactions[0];
             $transactionDate = \Carbon\Carbon::parse($firstTransaction['transaction_date']);
             $year = $transactionDate->year;
             $month = $transactionDate->month;
             
-            // Clear existing transactions for this specific month only
             $this->repository->clearByMonth($year, $month);
             
-            // Add timestamps
             $now = now();
-            $transactions = array_map(function ($transaction) use ($now) {
+            $userId = auth()->id();
+            $transactions = array_map(function ($transaction) use ($now, $userId) {
                 $transaction['created_at'] = $now;
                 $transaction['updated_at'] = $now;
+                $transaction['user_id'] = $userId;
                 return $transaction;
             }, $transactions);
             
-            // Store transactions
             $success = $this->repository->createBatch($transactions);
             
             if (!$success) {
                 throw new \Exception('Failed to store transactions');
             }
             
-            // Return summary for the month of the uploaded data
             return [
                 'success' => true,
                 'summary' => $this->getMonthlySummary($year, $month),

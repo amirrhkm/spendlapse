@@ -16,6 +16,7 @@ class Transaction extends Model
         'money_out',
         'balance',
         'currency',
+        'user_id',
     ];
 
     protected $casts = [
@@ -38,5 +39,13 @@ class Transaction extends Model
     public function getAmountAttribute(): float
     {
         return $this->isIncoming() ? $this->money_in : ($this->money_out ?? 0);
+    }
+
+    /**
+     * Get the user that owns the transaction.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

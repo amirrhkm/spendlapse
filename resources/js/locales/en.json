@@ -137,5 +137,34 @@
     "quickStats": "Quick Stats",
     "transactions": "Transactions",
     "averageExpense": "Average Expense"
+  },
+  "auth": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "bankPreference": "Bank Preference",
+    "namePlaceholder": "Enter your name",
+    "emailPlaceholder": "Enter your email",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "bankPreferenceHelp": "Select your bank for CSV parsing (only CIMB available)",
+    "comingSoon": "Coming Soon",
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to your SpendLapse account",
+      "button": "Sign In",
+      "logging": "Signing In...",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Sign up here"
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Join SpendLapse to track your expenses",
+      "button": "Create Account",
+      "registering": "Creating Account...",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in here"
+    }
   }
 }
