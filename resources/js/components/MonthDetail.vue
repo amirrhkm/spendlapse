@@ -101,7 +101,7 @@
                 
                 <!-- Details Column -->
                 <td class="px-6 py-4">
-                  <div class="text-sm text-gray-300 max-w-xs truncate" :title="transaction.transaction_details">
+                  <div class="text-sm text-gray-300 break-words" :title="transaction.transaction_details">
                     {{ transaction.transaction_details }}
                   </div>
                 </td>
