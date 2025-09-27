@@ -65,6 +65,11 @@
     "balance": "Balance",
     "noTransactions": "No transactions found for this month"
   },
+  "prefixDetail": {
+    "title": "Prefix Transaction Details",
+    "allTransactions": "All Transactions",
+    "noTransactions": "No transactions found for this prefix"
+  },
   "categories": {
     "title": "Custom Transaction Categories",
     "description": "Manage your transaction prefixes to automatically categorize spending patterns",

@@ -5,18 +5,26 @@
       <div 
         v-for="category in categoryData" 
         :key="category.prefix"
-        class="bg-gray-900 rounded-lg p-4 border border-gray-700 hover:border-gray-600 transition-colors"
+        @click="goToPrefixDetail(category.prefix)"
+        class="bg-gray-900 rounded-lg p-4 border border-gray-700 hover:border-gray-600 transition-colors cursor-pointer hover:bg-gray-800/50"
       >
         <div class="flex items-center justify-between mb-3">
-          <div>
+          <div class="flex-1">
             <h4 class="text-lg font-semibold text-white">{{ category.displayName }}</h4>
             <p v-if="category.displayName !== category.prefix" class="text-xs text-gray-500">{{ category.prefix }}</p>
           </div>
-          <div class="w-8 h-8 bg-purple-600/20 rounded-lg flex items-center justify-center">
-            <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-            </svg>
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 bg-purple-600/20 rounded-lg flex items-center justify-center">
+              <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+            </div>
+            <div class="w-5 h-5 text-gray-400 hover:text-white transition-colors">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
           </div>
         </div>
         
@@ -53,8 +61,11 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import localizationService from '../services/LocalizationService';
 import { categoryService } from '../services/CategoryService';
+
+const router = useRouter();
 
 const props = defineProps({
   transactions: {
@@ -96,6 +107,10 @@ const migrateFromLocalStorage = async () => {
 const formatCurrency = (amount) => {
   if (amount === null || amount === undefined) return `${localizationService.t('common.currency')} 0.00`;
   return `${localizationService.t('common.currency')} ${Number(amount).toFixed(2)}`;
+};
+
+const goToPrefixDetail = (prefixName) => {
+  router.push(`/prefix/${encodeURIComponent(prefixName)}`);
 };
 
 const categoryData = computed(() => {

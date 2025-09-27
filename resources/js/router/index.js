@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Dashboard from '../components/Dashboard.vue';
 import MonthDetail from '../components/MonthDetail.vue';
+import PrefixDetail from '../components/PrefixDetail.vue';
 import PrefixManagement from '../components/PrefixManagement.vue';
 import Login from '../components/Login.vue';
 import Register from '../components/Register.vue';
@@ -29,6 +30,13 @@ const routes = [
     path: '/month/:year/:month',
     name: 'MonthDetail',
     component: MonthDetail,
+    props: true,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/prefix/:prefixName',
+    name: 'PrefixDetail',
+    component: PrefixDetail,
     props: true,
     meta: { requiresAuth: true }
   },
