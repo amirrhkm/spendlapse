@@ -243,7 +243,7 @@
         </div>
 
         <!-- Back to Dashboard Button -->
-        <div class="flex justify-center">
+        <div class="flex justify-center mt-8 mb-12">
           <button 
             @click="goBack"
             class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-8 rounded-lg transition-colors duration-200 flex items-center shadow-lg"
