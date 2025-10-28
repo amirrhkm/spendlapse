@@ -220,9 +220,10 @@ const loadMonthData = async () => {
       .filter(t => t.money_out && parseFloat(t.money_out) > 0)
       .reduce((sum, t) => sum + parseFloat(t.money_out), 0);
     
-    const finalBalance = monthTransactions.length > 0
-      ? Math.max(...monthTransactions.map(t => parseFloat(t.balance)))
-      : 0;
+    // Get authoritative final balance from backend summary
+    const date = new Date(monthTransactions[0]?.transaction_date || `${props.year}-${props.month}-01`);
+    const summary = await transactionService.getSummary(date.getFullYear(), date.getMonth() + 1);
+    const finalBalance = summary && typeof summary.final_balance === 'number' ? summary.final_balance : 0;
     
     monthData.value = {
       year: parseInt(props.year),

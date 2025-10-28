@@ -85,8 +85,9 @@ const loadMonthlyData = async () => {
       monthlyGroups[key].transactions.push(transaction);
     });
     
-    // Calculate summaries for each month
-    Object.values(monthlyGroups).forEach(monthGroup => {
+    // Calculate local aggregates first, then fetch authoritative summaries from backend
+    const monthList = Object.values(monthlyGroups);
+    monthList.forEach(monthGroup => {
       // We cannot rely on intra-day ordering (no timestamps). Use order-agnostic metrics.
       
       // Calculate totals
@@ -100,18 +101,25 @@ const loadMonthlyData = async () => {
       
       monthGroup.transaction_count = monthGroup.transactions.length;
       
-      // Final balance: use the maximum observed balance in the month (order-agnostic)
-      if (monthGroup.transactions.length > 0) {
-        monthGroup.final_balance = Math.max(
-          ...monthGroup.transactions.map(t => parseFloat(t.balance))
-        );
-      }
-      
       // Calculate net change
       monthGroup.net_change = monthGroup.total_money_in - monthGroup.total_money_out;
       
       // Remove transactions array to keep the data clean
       delete monthGroup.transactions;
+    });
+
+    // Fetch backend summaries (authoritative final_balance via chain-matching)
+    const summaries = await Promise.all(
+      monthList.map(m => transactionService.getSummary(m.year, m.month))
+    );
+
+    // Merge backend data into month groups
+    monthList.forEach((m, idx) => {
+      const s = summaries[idx];
+      if (s && typeof s.final_balance === 'number') {
+        m.final_balance = s.final_balance;
+        // Keep local totals/net change as they already reflect current client data
+      }
     });
     
     // Sort months by date (ascending order - January first, December last)
