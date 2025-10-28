@@ -208,9 +208,7 @@ const loadMonthData = async () => {
       return normalizedYear === parseInt(props.year) && month === parseInt(props.month);
     });
     
-    // Sort transactions by date (oldest first)
-    monthTransactions.sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date));
-    
+    // Keep original list (ordering may be unreliable within same day)
     transactions.value = monthTransactions;
     
     // Calculate month summary
@@ -222,9 +220,11 @@ const loadMonthData = async () => {
       .filter(t => t.money_out && parseFloat(t.money_out) > 0)
       .reduce((sum, t) => sum + parseFloat(t.money_out), 0);
     
-    const finalBalance = monthTransactions.length > 0 
-      ? parseFloat(monthTransactions[monthTransactions.length - 1].balance)
-      : 0;
+    // Get authoritative final balance from backend summary using route props directly
+    const y = parseInt(props.year);
+    const m = parseInt(props.month);
+    const summary = await transactionService.getSummary(y, m);
+    const finalBalance = summary && typeof summary.final_balance === 'number' ? summary.final_balance : 0;
     
     monthData.value = {
       year: parseInt(props.year),

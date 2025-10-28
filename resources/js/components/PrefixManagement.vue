@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-black">
     <Header :transactionCount="transactionCount" />
-    <main class="container mx-auto px-4 py-12">
+    <main class="container mx-auto px-4 pt-12 pb-24">
       <!-- Loading State -->
       <div v-if="loading" class="flex items-center justify-center py-20">
         <div class="text-center">
@@ -90,7 +90,7 @@
       </div>
 
       <!-- Current Categories -->
-      <div class="bg-gray-900 rounded-xl shadow-lg border border-gray-700 p-8">
+      <div class="bg-gray-900 rounded-xl shadow-lg border border-gray-700 p-8 mb-12">
         <h2 class="text-xl font-semibold text-white mb-6 flex items-center">
           <svg class="w-6 h-6 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 

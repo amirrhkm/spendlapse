@@ -85,10 +85,10 @@ const loadMonthlyData = async () => {
       monthlyGroups[key].transactions.push(transaction);
     });
     
-    // Calculate summaries for each month
-    Object.values(monthlyGroups).forEach(monthGroup => {
-      // Sort transactions by date to get the correct final balance
-      monthGroup.transactions.sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date));
+    // Calculate local aggregates first, then fetch authoritative summaries from backend
+    const monthList = Object.values(monthlyGroups);
+    monthList.forEach(monthGroup => {
+      // We cannot rely on intra-day ordering (no timestamps). Use order-agnostic metrics.
       
       // Calculate totals
       monthGroup.total_money_in = monthGroup.transactions
@@ -101,17 +101,25 @@ const loadMonthlyData = async () => {
       
       monthGroup.transaction_count = monthGroup.transactions.length;
       
-      // Get final balance from the last transaction of the month
-      if (monthGroup.transactions.length > 0) {
-        const lastTransaction = monthGroup.transactions[monthGroup.transactions.length - 1];
-        monthGroup.final_balance = parseFloat(lastTransaction.balance);
-      }
-      
       // Calculate net change
       monthGroup.net_change = monthGroup.total_money_in - monthGroup.total_money_out;
       
       // Remove transactions array to keep the data clean
       delete monthGroup.transactions;
+    });
+
+    // Fetch backend summaries (authoritative final_balance via chain-matching)
+    const summaries = await Promise.all(
+      monthList.map(m => transactionService.getSummary(m.year, m.month))
+    );
+
+    // Merge backend data into month groups
+    monthList.forEach((m, idx) => {
+      const s = summaries[idx];
+      if (s && typeof s.final_balance === 'number') {
+        m.final_balance = s.final_balance;
+        // Keep local totals/net change as they already reflect current client data
+      }
     });
     
     // Sort months by date (ascending order - January first, December last)
