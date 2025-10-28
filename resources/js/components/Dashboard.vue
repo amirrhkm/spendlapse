@@ -87,8 +87,7 @@ const loadMonthlyData = async () => {
     
     // Calculate summaries for each month
     Object.values(monthlyGroups).forEach(monthGroup => {
-      // Sort transactions by date to get the correct final balance
-      monthGroup.transactions.sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date));
+      // We cannot rely on intra-day ordering (no timestamps). Use order-agnostic metrics.
       
       // Calculate totals
       monthGroup.total_money_in = monthGroup.transactions
@@ -101,10 +100,11 @@ const loadMonthlyData = async () => {
       
       monthGroup.transaction_count = monthGroup.transactions.length;
       
-      // Get final balance from the last transaction of the month
+      // Final balance: use the maximum observed balance in the month (order-agnostic)
       if (monthGroup.transactions.length > 0) {
-        const lastTransaction = monthGroup.transactions[monthGroup.transactions.length - 1];
-        monthGroup.final_balance = parseFloat(lastTransaction.balance);
+        monthGroup.final_balance = Math.max(
+          ...monthGroup.transactions.map(t => parseFloat(t.balance))
+        );
       }
       
       // Calculate net change

@@ -208,9 +208,7 @@ const loadMonthData = async () => {
       return normalizedYear === parseInt(props.year) && month === parseInt(props.month);
     });
     
-    // Sort transactions by date (oldest first)
-    monthTransactions.sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date));
-    
+    // Keep original list (ordering may be unreliable within same day)
     transactions.value = monthTransactions;
     
     // Calculate month summary
@@ -222,8 +220,8 @@ const loadMonthData = async () => {
       .filter(t => t.money_out && parseFloat(t.money_out) > 0)
       .reduce((sum, t) => sum + parseFloat(t.money_out), 0);
     
-    const finalBalance = monthTransactions.length > 0 
-      ? parseFloat(monthTransactions[monthTransactions.length - 1].balance)
+    const finalBalance = monthTransactions.length > 0
+      ? Math.max(...monthTransactions.map(t => parseFloat(t.balance)))
       : 0;
     
     monthData.value = {

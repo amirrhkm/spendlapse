@@ -83,13 +83,76 @@ class TransactionRepository implements TransactionRepositoryInterface
             return 0.0;
         }
         
-        $lastTransaction = Transaction::where('user_id', $userId)
+        // Fetch all transactions for the month
+        $transactions = Transaction::where('user_id', $userId)
             ->whereYear('transaction_date', $year)
             ->whereMonth('transaction_date', $month)
-            ->orderBy('transaction_date', 'desc')
-            ->first();
+            ->orderBy('transaction_date', 'asc')
+            ->get(['transaction_date', 'money_in', 'money_out', 'balance']);
 
-        return $lastTransaction ? $lastTransaction->balance : 0.0;
+        if ($transactions->isEmpty()) {
+            return 0.0;
+        }
+
+        // Group by date: collect set of observed balances and daily net change
+        $byDate = [];
+        foreach ($transactions as $t) {
+            $dateKey = $t->transaction_date->format('Y-m-d');
+            if (!isset($byDate[$dateKey])) {
+                $byDate[$dateKey] = [
+                    'balances' => [],
+                    'net' => 0.0,
+                ];
+            }
+            $byDate[$dateKey]['balances'][(string) number_format((float) $t->balance, 2, '.', '')] = true;
+            $byDate[$dateKey]['net'] += (float) ($t->money_in ?? 0) - (float) ($t->money_out ?? 0);
+        }
+
+        $dates = array_keys($byDate);
+        sort($dates);
+
+        // Initialize candidate end-of-day balances with any observed balance on the first date
+        $candidates = array_keys($byDate[$dates[0]]['balances']);
+
+        // Propagate through each subsequent date via daily net, matching exact observed balances
+        for ($i = 1; $i < count($dates); $i++) {
+            $date = $dates[$i];
+            $net = $byDate[$date]['net'];
+            $observedSet = $byDate[$date]['balances'];
+
+            $nextCandidates = [];
+            foreach ($candidates as $candStr) {
+                $cand = (float) $candStr;
+                $expected = number_format($cand + $net, 2, '.', '');
+                if (isset($observedSet[$expected])) {
+                    $nextCandidates[$expected] = true;
+                }
+            }
+
+            if (empty($nextCandidates)) {
+                // No exact chain match on this day; break and fallback later
+                $candidates = [];
+                break;
+            }
+
+            $candidates = array_keys($nextCandidates);
+        }
+
+        if (!empty($candidates)) {
+            // Any remaining candidate is a valid month-end balance; pick the first
+            return (float) $candidates[0];
+        }
+
+        // Fallbacks: try using the last calendar date's max balance, else overall max
+        $lastDate = end($dates);
+        $lastDayBalances = array_keys($byDate[$lastDate]['balances']);
+        if (!empty($lastDayBalances)) {
+            rsort($lastDayBalances, SORT_NATURAL);
+            return (float) $lastDayBalances[0];
+        }
+
+        $maxBalance = $transactions->max('balance');
+        return $maxBalance ? (float) $maxBalance : 0.0;
     }
 
     public function clearAll(): bool
