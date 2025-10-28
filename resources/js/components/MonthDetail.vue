@@ -220,9 +220,10 @@ const loadMonthData = async () => {
       .filter(t => t.money_out && parseFloat(t.money_out) > 0)
       .reduce((sum, t) => sum + parseFloat(t.money_out), 0);
     
-    // Get authoritative final balance from backend summary
-    const date = new Date(monthTransactions[0]?.transaction_date || `${props.year}-${props.month}-01`);
-    const summary = await transactionService.getSummary(date.getFullYear(), date.getMonth() + 1);
+    // Get authoritative final balance from backend summary using route props directly
+    const y = parseInt(props.year);
+    const m = parseInt(props.month);
+    const summary = await transactionService.getSummary(y, m);
     const finalBalance = summary && typeof summary.final_balance === 'number' ? summary.final_balance : 0;
     
     monthData.value = {
